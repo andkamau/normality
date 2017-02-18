@@ -1,6 +1,6 @@
 import six
 
-from normality.cleaning import collapse_spaces, category_replace
+from normality.cleaning import collapse_spaces, category_replace, decompose_nfkd
 from normality.constants import UNICODE_CATEGORIES
 from normality.transliteration import latinize_text, ascii_text
 from normality.encoding import guess_encoding  # noqa
@@ -8,7 +8,7 @@ from normality.encoding import guess_encoding  # noqa
 WS = ' '
 
 
-def normalize(text, lowercase=True, collapse=True, latinize=False, ascii=False,
+def normalize(text, lowercase=True, collapse=True, latinize=False, ascii=False, decompose=False,
               replace_categories=UNICODE_CATEGORIES):
     """The main normalization function for text.
 
@@ -37,6 +37,9 @@ def normalize(text, lowercase=True, collapse=True, latinize=False, ascii=False,
     if lowercase:
         # Yeah I made a Python package for this.
         text = text.lower()
+
+    if decompose:
+        text = decompose_nfkd(text)
 
     if ascii:
         # A stricter form of transliteration that leaves only ASCII
